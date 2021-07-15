@@ -25,7 +25,7 @@ int main(int argc, char* argv[])
 {
   iniRead();
 
-  char	buf[BUFLEN];
+  char	buf[BUFFSIZE];
   int	key;		// 入力キー文字
   int cnt = 0;
 
@@ -50,19 +50,22 @@ int main(int argc, char* argv[])
 
     GetTimeStr(buf, BUFLEN, cnt);
 
-    mvprintw(y + 3, x - 50, "%d", tdf[cnt]);	
-
+    mvaddstr(y - 14, x - 50, "World Clock");
+    mvaddstr(y - 11, x - 50, "press 'a' turn Left, press 'l' turn Right");
+    mvaddstr(y - 8, x - 50, "press 's' output location and time");
     DrawClock(buf);			// 時刻文字列を表示
     cityPrint(cnt);
     refresh();
 
     key = getch();
-    if (key == 'q') break;		// [Q]キーで終了
-    if (key == 's') {
+    if (key == 'q') {
+      break;		// [Q]キーで終了
+    }
+    if (key == 'l') {
       if (cnt >= 0 && cnt < 4) {
         cnt++;
       }
-      else if(cnt == 4) {
+      else {
         cnt = 0;
       }
     }
@@ -70,7 +73,7 @@ int main(int argc, char* argv[])
       if (cnt > 0 && cnt <= 4) {
         cnt--;
       }
-      else if (cnt == 0) {
+      else {
         cnt = 4;
       }
     }
@@ -93,15 +96,23 @@ void GetTimeStr(char* buf, int n, int cnt)
   }
   t = time(NULL);		// 現在の unix時刻を取得
   error = localtime_s(&tm, &t);	// unix時刻を時刻要素（年月日時分秒）へ分解
-  tm.tm_hour += tdf[cnt];
+  if (tm.tm_hour + tdf[cnt] < 0) {
+    tm.tm_hour = tm.tm_hour + tdf[cnt] + 24;
+  }
+  else if (tm.tm_hour + tdf[cnt] > 23) {
+    tm.tm_hour = tm.tm_hour + tdf[cnt] - 24;
+  }
+  else {
+    tm.tm_hour += tdf[cnt];
+  }
   strftime(buf, n, "%H:%M:%S", &tm);	// 時刻文字列（時:分:秒）を生成
+  //mvprintw(y + 3, x - 50, "%s has a time dofference of %d hours from %s", cities[cnt], tdf[cnt], cities[2]);
 }
 
 void DrawClock(char* s)
 {
   mvaddstr(y, x, s);	// 時刻を表示 
 }
-
 
 void getCurrentDirectory(char* currentDirectory) {
   GetCurrentDirectory(CHARBUFF, currentDirectory);
@@ -144,7 +155,6 @@ void cityPrint(int k) {
     k3 = 0;
     k4 = 1;
   }
-  //napms(300);
   mvaddstr(y - 3, x - 50, cities[k0]);	// 地点を表示
   mvaddstr(y - 3, x - 25, cities[k1]);	// 地点を表示
   mvaddch(y - 3, x - 6, '<' );
