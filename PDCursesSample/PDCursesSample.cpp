@@ -29,6 +29,7 @@ int main(int argc, char* argv[])
   int	key;		// 入力キー文字
   int cnt = 0;
 
+
   // 画面の初期化
   initscr();
 
@@ -49,7 +50,7 @@ int main(int argc, char* argv[])
 
     GetTimeStr(buf, BUFLEN, cnt);
 
-    mvprintw(y + 3, x - 50, "%d", td[cnt]);	// 地点を表示
+    mvprintw(y + 3, x - 50, "%d", tdf[cnt]);	
 
     DrawClock(buf);			// 時刻文字列を表示
     cityPrint(cnt);
@@ -57,7 +58,7 @@ int main(int argc, char* argv[])
 
     key = getch();
     if (key == 'q') break;		// [Q]キーで終了
-    if (key == 'a') {
+    if (key == 's') {
       if (cnt >= 0 && cnt < 4) {
         cnt++;
       }
@@ -65,7 +66,7 @@ int main(int argc, char* argv[])
         cnt = 0;
       }
     }
-    if (key == 's') {
+    if (key == 'a') {
       if (cnt > 0 && cnt <= 4) {
         cnt--;
       }
@@ -84,15 +85,21 @@ int main(int argc, char* argv[])
 
 void GetTimeStr(char* buf, int n, int cnt)
 {
+  if (cnt < 3) {
+    cnt += 2;
+  }
+  else if(cnt >= 3) {
+    cnt -= 3;
+  }
   t = time(NULL);		// 現在の unix時刻を取得
   error = localtime_s(&tm, &t);	// unix時刻を時刻要素（年月日時分秒）へ分解
-  tm.tm_hour += td[cnt];
+  tm.tm_hour += tdf[cnt];
   strftime(buf, n, "%H:%M:%S", &tm);	// 時刻文字列（時:分:秒）を生成
 }
 
 void DrawClock(char* s)
 {
-  mvaddstr(y, x, s);	// 時刻を表示
+  mvaddstr(y, x, s);	// 時刻を表示 
 }
 
 
@@ -140,7 +147,9 @@ void cityPrint(int k) {
   //napms(300);
   mvaddstr(y - 3, x - 50, cities[k0]);	// 地点を表示
   mvaddstr(y - 3, x - 25, cities[k1]);	// 地点を表示
+  mvaddch(y - 3, x - 6, '<' );
   mvaddstr(y - 3, x, cities[k2]);	// 地点を表示
+  mvaddch(y - 3, x + 15, '>');
   mvaddstr(y - 3, x + 25, cities[k3]);	// 地点を表示
   mvaddstr(y - 3, x + 50, cities[k4]);	// 地点を表示
   refresh();
@@ -163,26 +172,26 @@ void iniRead() {
 
   GetPrivateProfileString(section, keyWord, "none", keyValue, CHARBUFF, settingFile);
   sprintf_s(cities[0], keyValue);
-  td[0] = GetPrivateProfileInt(section, td, 0, settingFile);
+  tdf[0] = GetPrivateProfileInt(section, td, 0, settingFile);
 
   sprintf_s(section, "section2");
   GetPrivateProfileString(section, keyWord, "none", keyValue, CHARBUFF, settingFile);
   sprintf_s(cities[1], keyValue);
-  td[1] = GetPrivateProfileInt(section, td, 0, settingFile);
+  tdf[1] = GetPrivateProfileInt(section, td, 0, settingFile);
 
   sprintf_s(section, "section3");
   GetPrivateProfileString(section, keyWord, "none", keyValue, CHARBUFF, settingFile);
   sprintf_s(cities[2], keyValue);
-  td[2] = GetPrivateProfileInt(section, td, 0, settingFile);
+  tdf[2] = GetPrivateProfileInt(section, td, 0, settingFile);
 
   sprintf_s(section, "section4");
   GetPrivateProfileString(section, keyWord, "none", keyValue, CHARBUFF, settingFile);
   sprintf_s(cities[3], keyValue);
-  td[3] = GetPrivateProfileInt(section, td, 0, settingFile);
+  tdf[3] = GetPrivateProfileInt(section, td, 0, settingFile);
 
   sprintf_s(section, "section5");
   GetPrivateProfileString(section, keyWord, "none", keyValue, CHARBUFF, settingFile);
   sprintf_s(cities[4], keyValue);
-  td[4] = GetPrivateProfileInt(section, td, 0, settingFile);
+  tdf[4] = GetPrivateProfileInt(section, td, 0, settingFile);
 }
 

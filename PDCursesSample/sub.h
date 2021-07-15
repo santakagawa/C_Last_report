@@ -1,13 +1,13 @@
 #define CHARBUFF 124
 #define BUFFSIZE 1024
-#define BUFLEN	10	// ������o�b�t�@�̔z��T�C�Y
+#define BUFLEN	10	// 文字列バッファの配列サイズ
 
 int i;
-int x=58, y=15;		// �\���ʒu
-int w, h;		// ��ʃT�C�Y
+int x=58, y=15;		// 表示位置
+int w, h;		// 画面サイズ
 char buf[BUFFSIZE];
-char cities[5][BUFFSIZE]; //�n�於
-int td[5]; //����
-time_t		t;	// ���݂� unix����
-struct tm tm;	// �����v�f�\���̂ւ̃|�C���^
+char cities[5][BUFFSIZE]; //地域名
+int tdf[5]; //時差
+time_t		t;	// 現在の unix時刻
+struct tm tm;	// 時刻要素構造体へのポインタ
 errno_t error;
