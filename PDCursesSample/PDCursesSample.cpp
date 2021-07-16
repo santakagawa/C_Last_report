@@ -10,7 +10,6 @@
 #include "myMath.cpp"
 
 
-
 int main(int argc, char* argv[])
 {
   iniRead();

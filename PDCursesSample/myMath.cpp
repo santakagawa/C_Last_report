@@ -16,8 +16,8 @@ void preserve(char* s,int k) {
   else if (k >= 3) {
     k -= 3;
   }
-  error = fopen_s(&fp, "output.txt", "w");
-  if (error != 0) {
+  errorfile = fopen_s(&fp, "output.txt", "w");
+  if (errorfile != 0) {
     fprintf_s(stderr, "failed to open");
   }
   else {
